@@ -155,11 +155,20 @@ def reader_concurrent_number():
 @app.route(u'/reader_latency')
 def reader_latency():
     value = get_reader_latency()
-    print(u'reader latency: %d' % value)
+    return json.dumps({'value':value})
+
+@app.route(u'/writer_concurrent_number')
+def writer_concurrent_number():
+    value = 500 * len(writer_list)
+    return json.dumps({'value':value})
+
+@app.route(u'/writer_latency')
+def writer_latency():
+    value = get_writer_latency()
     return json.dumps({'value':value})
 
 @app.route(u'/', methods=[u'GET', u'POST'])
-def test():
+def index():
     if request.method == u'POST':
         action = request.args.get(u'action')
         if action == u'download':
@@ -189,7 +198,7 @@ def test():
                 increase_writer(writer_number - current_number)
             elif writer_number < current_number:
                 decrease_writer(current_number - writer_number)
-        return redirect(url_for(u'test'))
+        return redirect(url_for(u'index'))
     return render_template(u'index.html')
 
 if __name__ == u'__main__':
