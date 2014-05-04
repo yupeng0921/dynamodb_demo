@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title> dynamodb demo</title>
+
+	<script type="text/javascript"
+			src="/static/js/jquery-latest.js">
+	</script>
+	<script type="text/javascript">
+	  setInterval("refresh_readers();",5000);
+	  function refresh_readers(){
+	  $('#readers').load(location.href + ' #readers');
+	  }
+	  setInterval("refresh_writers();",5000);
+	  function refresh_writers(){
+	  $('#writers').load(location.href + ' #writers');
+	  }
+	</script>
+	<!-- Bootstrap core CSS -->
+	<link href="/static/dist/css/bootstrap.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+	<div id="readers">
+	  <p>reader</p>
+	</div>
+	<div id="writers">
+	  <p>writer</p>
+	</div>
+  </body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta http-equiv="refresh" content="5">
+
+	<title> dynamodb demo</title>
+
+	<script type="text/javascript" src="/static/js/jquery-latest.js"></script>
+	<script src="/static/js/highcharts.js"></script>
+
+	<!-- Bootstrap core CSS -->
+	<link href="/static/dist/css/bootstrap.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+	<div id="set_readers">
+	  <form role="form" action="/?action=download" method="post">
+		<div class="form-group">
+		  <div class="row">
+			<div class="col-lg-2">
+			  <input type="text" class="form-control" id="reader_number" name="reader_number" placeholder="reader number">
+			</div>
+		  </div>
+		</div>
+		<button type="submit" class="btn btn-default" id="reader_submit" name="reader_submit">Submit</button>
+	  </form>
+	</div>
+	<div id="readers">
+	  <div class="row">
+		<div class="col-md-4">
+		  <div id="reader_concurrent"></div>
+		</div>
+		<div class="col-md-4">
+		  <div id="reader_latency"></div>
+		</div>
+	  </div>
+	</div>
+
+
+	<script>
+	  $(function () {
+	  $('#reader_concurrent').highcharts({
+	  chart: {
+	  type: 'line',
+	  },
+	  title: {
+	  text: 'reader concurrent'
+	  },
+	  xAxis: {
+	  categories: [
+	  {% for index in index_list %}
+	  {{index}},
+	  {% endfor %}
+	  ]
+	  },
+	  yAxis: {
+	  title: {
+	  text: 'count'
+	  }
+	  },
+	  series: [{
+	  data: [
+	  {% for reader_number in reader_number_list %}
+	  {{reader_number}},
+	  {% endfor %}
+	  ]}
+	  ]})})
+	</script>
+
+	<script>
+	  $(function () {
+	  $('#reader_latency').highcharts({
+	  chart: {
+	  type: 'line'
+	  },
+	  title: {
+	  text: 'reader latency'
+	  },
+	  xAxis: {
+	  categories: [
+	  {% for index in index_list %}
+	  {{index}},
+	  {% endfor %}
+	  ]
+	  },
+	  yAxis: {
+	  title: {
+	  text: 'ms'
+	  }
+	  },
+	  series: [{
+	  data: [
+	  {% for reader_latency in reader_latency_list %}
+	  {{reader_latency}},
+	  {% endfor %}
+	  ]}
+	  ]})})
+	</script>
+
+	<div id="set_writers">
+	  <form role="form" action="/?action=upload" method="post">
+		<div class="form-group">
+		  <div class="row">
+			<div class="col-lg-2">
+			  <input type="text" class="form-control" id="writer_number" name="writer_number" placeholder="writer number">
+			</div>
+		  </div>
+		</div>
+		<button type="submit" class="btn btn-default" id="writer_submit" name="writer_submit">Submit</button>
+	  </form>
+	</div>
+	<div id="writers">
+	  <div class="row">
+		<div class="col-md-4">
+		  <div id="writer_concurrent"></div>
+		</div>
+		<div class="col-md-4">
+		  <div id="writer_latency"></div>
+		</div>
+	  </div>
+	</div>
+
+
+	<script>
+	  $(function () {
+	  $('#writer_concurrent').highcharts({
+	  chart: {
+	  type: 'line',
+	  },
+	  title: {
+	  text: 'writer concurrent'
+	  },
+	  xAxis: {
+	  categories: [
+	  {% for index in index_list %}
+	  {{index}},
+	  {% endfor %}
+	  ]
+	  },
+	  yAxis: {
+	  title: {
+	  text: 'count'
+	  }
+	  },
+	  series: [{
+	  data: [
+	  {% for writer_number in writer_number_list %}
+	  {{writer_number}},
+	  {% endfor %}
+	  ]}
+	  ]})})
+	</script>
+
+	<script>
+	  $(function () {
+	  $('#writer_latency').highcharts({
+	  chart: {
+	  type: 'line'
+	  },
+	  title: {
+	  text: 'writer latency'
+	  },
+	  xAxis: {
+	  categories: [
+	  {% for index in index_list %}
+	  {{index}},
+	  {% endfor %}
+	  ]
+	  },
+	  yAxis: {
+	  title: {
+	  text: 'ms'
+	  }
+	  },
+	  series: [{
+	  data: [
+	  {% for writer_latency in writer_latency_list %}
+	  {{writer_latency}},
+	  {% endfor %}
+	  ]}
+	  ]})})
+	</script>
+
+  </body>
+</html>

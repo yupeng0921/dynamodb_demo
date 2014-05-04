@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title> dynamodb demo</title>
+
+	<script type="text/javascript"
+			src="/static/jquery-latest.js">
+	</script>
+	<script type="text/javascript">
+	  setInterval("refresh_readers();",5000);
+	  function refresh_readers(){
+	  $('#readers').load(location.href + ' #readers');
+	  }
+	  setInterval("refresh_writers();",5000);
+	  function refresh_writers(){
+	  $('#writers').load(location.href + ' #writers');
+	  }
+	</script>
+	<!-- Bootstrap core CSS -->
+	<link href="/static/dist/css/bootstrap.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+	<div id="readers">
+	  <span class="label label-primary">readers: {{reader_number}}</span>
+	  {% for reader_info in readers_info %}
+	  <textarea class="form-control" rows="8">{{reader_info}}</textarea>
+	  {% endfor %}
+	</div>
+	<div id="writers">
+	  <span class="label label-info">writers: {{writer_number}}</span>
+	  {% for writer_info in writers_info %}
+	  <textarea class="form-control" rows="8">{{writer_info}}</textarea>
+	  {% endfor %}
+	</div>
+  </body>
+</html>

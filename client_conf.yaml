@@ -1,0 +1,3 @@
+pid_file: /tmp/client_daemon.pid
+task_file: /tmp/client_task
+result_file: /tmp/client_result

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title> dynamodb demo</title>
+
+	<script type="text/javascript" src="/static/js/jquery-latest.js"></script>
+	<script src="/static/js/highcharts.js"></script>
+	<script src="/static/js/load_chart.js"></script>
+	<!-- <script type="text/javascript" src="/static/js/partial.js"></script> -->
+	<!-- <script type="text/javascript"> -->
+	<!--   setInterval("refresh_readers();",5000); -->
+	<!--   function refresh_readers(){ -->
+	<!--   $('#readers').load(location.href + ' #readers'); -->
+	<!--   } -->
+	<!--   setInterval("refresh_writers();",5000); -->
+	<!--   function refresh_writers(){ -->
+	<!--   $('#writers').load(location.href + ' #writers'); -->
+	<!--   } -->
+	<!-- </script> -->
+
+	<!-- Bootstrap core CSS -->
+	<link href="/static/dist/css/bootstrap.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+	<div id="writers">
+	  <p>reader</p>
+	</div>
+
+	<div id="set_readers">
+	  <form role="form" action="/?action=download" method="post">
+		<div class="form-group">
+		  <div class="row">
+			<div class="col-lg-2">
+			  <input type="text" class="form-control" id="reader_number" name="reader_number" placeholder="reader number">
+			</div>
+		  </div>
+		</div>
+		<button type="submit" class="btn btn-default" id="reader_submit" name="reader_submit">Submit</button>
+	  </form>
+	</div>
+	<div id="readers">
+	  <div class="row">
+		<div class="col-md-4">
+		  <div id="reader_concurrent"></div>
+		</div>
+		<div class="col-md-4">
+		  <div id="reader_latency"></div>
+		</div>
+	  </div>
+	</div>
+
+  </body>
+</html>
