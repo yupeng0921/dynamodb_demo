@@ -35,6 +35,8 @@ $(function () {
 								tickPixelInterval: 150
 								},
 							yAxis: {
+						min: 0,
+								max: 2000,
 						title: {
 							text: 'Value'
 									},
@@ -68,7 +70,7 @@ $(function () {
 											for (i = -29; i <= 0; i++) {
 												data.push({
 													x: time + i * 1000,
-															y: -1
+															y: 0
 															});
 											}
 											return data;
@@ -116,6 +118,8 @@ $(function () {
 								tickPixelInterval: 150
 								},
 							yAxis: {
+						min: 0,
+								max: 100,
 						title: {
 							text: 'Value'
 									},
@@ -149,7 +153,7 @@ $(function () {
 											for (i = -29; i <= 0; i++) {
 												data.push({
 													x: time + i * 1000,
-															y: -1
+															y: 0
 															});
 											}
 											return data;
