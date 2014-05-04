@@ -164,7 +164,7 @@ $(document).ready(function(){
 		$("form#reader_form").submit(function(e){
 				e.preventDefault();
 				$.ajax({
-					url: "/test?action=download",
+					url: "/?action=download",
 							type: 'post',
 							data: $("#reader_form").serialize(),
 					});
@@ -174,6 +174,10 @@ $(document).ready(function(){
 $(document).ready(function(){
 		$("form#writer_form").submit(function(e){
 				e.preventDefault();
-				alert("Submitted writer");
+				$.ajax({
+					url: "/?action=upload",
+							type: 'post',
+							data: $("#writer_form").serialize(),
+					});
 			});
 	});

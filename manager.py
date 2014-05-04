@@ -147,58 +147,6 @@ def get_writer_latency():
         return 0
     return int(latency_sum / count)
 
-@app.route(u'/', methods=[u'GET', u'POST'])
-def index():
-    if request.method == u'POST':
-        action = request.args.get(u'action')
-        if action == u'download':
-            reader_number = request.form[u'reader_number']
-            reader_number = int(reader_number)
-            current_number = len(reader_list)
-            idle_number = len(idle_list)
-            if reader_number > idle_number + current_number:
-                reader_number = idle_number + current_number
-            elif reader_number < 0:
-                reader_number = 0
-            if reader_number > current_number:
-                increase_reader(reader_number - current_number)
-            elif reader_number < current_number:
-                decrease_reader(current_number - reader_number)
-        elif action == u'upload':
-            writer_number = request.form[u'writer_number']
-            writer_number = int(writer_number)
-            current_number = len(writer_list)
-            idle_number = len(idle_list)
-            if writer_number > idle_number + current_number:
-                writer_number = idle_number + current_number
-            elif writer_number < 0:
-                writer_number = 0
-            if writer_number > current_number:
-                increase_writer(writer_number - current_number)
-            elif writer_number < current_number:
-                decrease_writer(current_number - writer_number)
-        return redirect(url_for(u'index'))
-    reader_number_list.append(500*len(reader_list))
-    writer_number_list.append(500*len(writer_list))
-    reader_latency_list.append(get_reader_latency())
-    writer_latency_list.append(get_writer_latency())
-    global current_list_count
-    current_list_count += 1
-    if current_list_count > largest_list_count:
-        reader_number_list.pop(0)
-        writer_number_list.pop(0)
-        reader_latency_list.pop(0)
-        writer_latency_list.pop(0)
-        current_list_count -= 1
-    index_list = range(0, current_list_count)
-    print(reader_latency_list)
-    return render_template(u'index.html', \
-                               index_list=index_list, \
-                               reader_number_list=reader_number_list, \
-                               writer_number_list=writer_number_list, \
-                               reader_latency_list=reader_latency_list, \
-                               writer_latency_list=writer_latency_list)
-
 @app.route(u'/reader_concurrent_number')
 def reader_concurrent_number():
     value = 500 * len(reader_list)
@@ -210,7 +158,7 @@ def reader_latency():
     print(u'reader latency: %d' % value)
     return json.dumps({'value':value})
 
-@app.route(u'/test', methods=[u'GET', u'POST'])
+@app.route(u'/', methods=[u'GET', u'POST'])
 def test():
     if request.method == u'POST':
         action = request.args.get(u'action')
@@ -242,7 +190,7 @@ def test():
             elif writer_number < current_number:
                 decrease_writer(current_number - writer_number)
         return redirect(url_for(u'test'))
-    return render_template(u'i5.html')
+    return render_template(u'index.html')
 
 if __name__ == u'__main__':
     app.debug = True
