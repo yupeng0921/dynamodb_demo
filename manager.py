@@ -175,6 +175,7 @@ def index():
             reader_number = request.form[u'reader_number']
             print(u'reader_number: %s' % reader_number)
             reader_number = int(reader_number)
+            reader_number /= 500
             current_number = len(reader_list)
             idle_number = len(idle_list)
             if reader_number > idle_number + current_number:
@@ -188,6 +189,7 @@ def index():
         elif action == u'upload':
             writer_number = request.form[u'writer_number']
             writer_number = int(writer_number)
+            writer_number /= 500
             current_number = len(writer_list)
             idle_number = len(idle_list)
             if writer_number > idle_number + current_number:
@@ -201,6 +203,9 @@ def index():
         return redirect(url_for(u'index'))
     return render_template(u'index.html')
 
+@app.route(u'/client_info')
+def client_info():
+    return render_template(u'client_info.html', idle_list=idle_list, reader_list=reader_list, writer_list=writer_list)
 if __name__ == u'__main__':
     app.debug = True
     app.run(host=u'0.0.0.0', port=80)

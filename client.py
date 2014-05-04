@@ -12,6 +12,7 @@ with open(u'/opt/dynamodb_demo/client_conf.yaml') as f:
 pid_file = conf[u'pid_file']
 task_file = conf[u'task_file']
 result_file = conf[u'result_file']
+raw_result_file = conf[u'raw_result_file']
 
 app = Flask(__name__)
 
@@ -73,13 +74,17 @@ def result():
         with open(result_file, u'r') as f:
             result = f.read()
     except Exception, e:
-        result = u'no update'
-    try:
-        os.remove(result_file)
-    except Exception, e:
-        pass
+        result = u'no data'
     return result
 
+@app.route(u'/raw_result', methods=[u'GET'])
+def raw_result():
+    try:
+        with open(raw_result_file, u'r') as f:
+            raw_result = f.read()
+    except Exception, e:
+        raw_result = u'no result'
+    return render_template(u'raw_result.html', raw_result=raw_result)
 if __name__ == u'__main__':
     app.debug = True
     app.run(host=u'0.0.0.0', port=80)

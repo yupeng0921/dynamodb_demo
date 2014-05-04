@@ -16,6 +16,7 @@ with open(u'/opt/dynamodb_demo/client_conf.yaml') as f:
 pid_file = conf[u'pid_file']
 task_file = conf[u'task_file']
 result_file = conf[u'result_file']
+raw_result_file = conf[u'raw_result_file']
 
 doing = False
 def stop_job(a, b):
@@ -48,6 +49,9 @@ def do_job(task_file):
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     ret = p.wait()
     result = p.stdout.readlines()
+    with open(raw_result_file, u'w') as f:
+        for line in result:
+            f.write(line)
     if ret:
         raise Exception(u'ret not zero %s %s' % (ret, result))
     latency = result[4].split(u' ')[1]

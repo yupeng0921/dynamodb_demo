@@ -21,9 +21,6 @@ batch_count = conf[u'batch_count']
 year = 2014
 init_date = 0
 def generate_date():
-    global init_date
-    init_date += 1
-    return unicode(init_date)
     month = random.randint(1,12)
     day = random.randint(1,28)
     hour = random.randint(0,23)
@@ -34,7 +31,7 @@ def generate_date():
 
 def generate_score():
     score = random.randint(100,1000)
-    return u'%s' % score
+    return score
 
 def do_insert():
     conn = boto.dynamodb2.connect_to_region(region)
