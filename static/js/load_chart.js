@@ -143,7 +143,7 @@ $(function () {
 						enabled: false
 								},
 							series: [{
-							name: 'concurrent read',
+							name: 'read latency',
 									data: (function() {
 											// generate an array of random data
 											var data = [],
@@ -309,7 +309,7 @@ $(function () {
 						enabled: false
 								},
 							series: [{
-							name: 'concurrent write',
+							name: 'write latency',
 									data: (function() {
 											// generate an array of random data
 											var data = [],

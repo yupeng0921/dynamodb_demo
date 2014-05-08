@@ -19,9 +19,10 @@ count_per_user = conf[u'count_per_user']
 batch_count = conf[u'batch_count']
 
 year = 2014
+last_month = 4
 init_date = 0
 def generate_date():
-    month = random.randint(1,12)
+    month = random.randint(1,last_month)
     day = random.randint(1,28)
     hour = random.randint(0,23)
     minute = random.randint(0,59)
