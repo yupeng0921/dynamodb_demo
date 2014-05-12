@@ -14,6 +14,7 @@ with open(u'manager_conf.yaml') as f:
 pid_file = conf[u'pid_file']
 server_list = conf[u'server_list']
 client_list = conf[u'client_list']
+concurrent_number = int(conf[u'concurrent_number'])
 
 app = Flask(__name__)
 
@@ -53,7 +54,7 @@ def increase_reader(num):
         data = {u'action': u'download',
                 u'index': get_task_index(),
                 u'interval': 5,
-                u'concurrent': 500
+                u'concurrent': concurrent_number
                 }
         data = json.dumps(data)
         ret = requests.post(url, data=data, headers=headers)
@@ -85,7 +86,7 @@ def increase_writer(num):
         data = {u'action': u'upload',
                 u'index': get_task_index(),
                 u'interval': 5,
-                u'concurrent': 500
+                u'concurrent': concurrent_number
                 }
         data = json.dumps(data)
         ret = requests.post(url, data=data, headers=headers)
@@ -149,7 +150,7 @@ def get_writer_latency():
 
 @app.route(u'/reader_concurrent_number')
 def reader_concurrent_number():
-    value = 500 * len(reader_list)
+    value = concurrent_number * len(reader_list)
     return json.dumps({'value':value})
 
 @app.route(u'/reader_latency')
@@ -159,7 +160,7 @@ def reader_latency():
 
 @app.route(u'/writer_concurrent_number')
 def writer_concurrent_number():
-    value = 500 * len(writer_list)
+    value = concurrent_number * len(writer_list)
     return json.dumps({'value':value})
 
 @app.route(u'/writer_latency')
@@ -175,7 +176,7 @@ def index():
             reader_number = request.form[u'reader_number']
             print(u'reader_number: %s' % reader_number)
             reader_number = int(reader_number)
-            reader_number /= 500
+            reader_number /= concurrent_number
             current_number = len(reader_list)
             idle_number = len(idle_list)
             if reader_number > idle_number + current_number:
@@ -189,7 +190,7 @@ def index():
         elif action == u'upload':
             writer_number = request.form[u'writer_number']
             writer_number = int(writer_number)
-            writer_number /= 500
+            writer_number /= concurrent_number
             current_number = len(writer_list)
             idle_number = len(idle_list)
             if writer_number > idle_number + current_number:

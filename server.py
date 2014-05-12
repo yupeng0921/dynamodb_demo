@@ -37,16 +37,7 @@ def get_data(name=None):
         abort(404)
     return u'%s %s %s\n' % (name, date, score)
 
-year = 2014
-def generate_date():
-    month = random.randint(1,12)
-    day = random.randint(1,28)
-    hour = random.randint(0,23)
-    minute = random.randint(0,59)
-    second = random.randint(0,59)
-    date = u'%04d%02d%02d%02d%02d%02d' % (year, month, day, hour, minute, second)
-    return date
-
+date_string = u'20140418152736'
 @app.route(u'/upload')
 @app.route(u'/upload/<name>')
 def up_date(name=None):
@@ -57,7 +48,7 @@ def up_date(name=None):
         abort(400)
     if not score:
         abort(400)
-    date = generate_date()
+    date = date_string
     table.put_item(data={u'name':name, u'date':date, u'score':score}, overwrite=True)
     return u'%s %s %s\n' % (name, date, score)
 

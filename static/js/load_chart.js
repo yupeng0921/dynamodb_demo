@@ -1,3 +1,4 @@
+var max_concurrent = 5000
 $(function () {
 		$(document).ready(function() {
 				Highcharts.setOptions({
@@ -36,7 +37,7 @@ $(function () {
 								},
 							yAxis: {
 						min: 0,
-								max: 2000,
+								max: max_concurrent,
 						title: {
 							text: 'Value'
 									},
@@ -202,7 +203,7 @@ $(function () {
 								},
 							yAxis: {
 						min: 0,
-								max: 2000,
+								max: max_concurrent,
 						title: {
 							text: 'Value'
 									},

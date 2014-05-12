@@ -44,7 +44,7 @@ def do_job(task_file):
     concurrent = task[u'concurrent']
     action = task[u'action']
     interval = task[u'interval']
-    cmd = u'/opt/dynamodb_demo/http_load/http_load -p %s -r %s -s %s /opt/url/%s_url_%s.txt' % \
+    cmd = u'/opt/dynamodb_demo/http_load/http_load -p %s -r %s -s %s /opt/dynamodb_demo/url/%s_url_%s.txt' % \
         (concurrent, concurrent, interval, action, index)
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     ret = p.wait()
