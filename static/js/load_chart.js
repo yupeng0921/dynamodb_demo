@@ -1,4 +1,4 @@
-var max_concurrent = 5000
+var max_concurrent = 4000
 $(function () {
 		$(document).ready(function() {
 				Highcharts.setOptions({
