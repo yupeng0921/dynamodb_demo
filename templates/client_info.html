@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<script type="text/javascript"
+			src="/static/js/jquery-latest.js">
+	</script>
+	<script type="text/javascript">
+	  setInterval("refresh_client_info();",5000);
+	  function refresh_client_info(){
+	  $('#client_info').load(location.href + ' #client_info');
+	  }
+	</script>
+
+	<title> dynamodb client info</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="/static/dist/css/bootstrap.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+	<div id="client_info">
+	  <table class="table table-bordered">
+		<tr class="active">
+		  <td> idle </td>
+		  {% for idle in idle_list %}
+		  <td> {{idle}} </td>
+		  {% endfor %}
+		</tr>
+		<tr class="success">
+		  <td> reader </td>
+		  {% for reader in reader_list %}
+		  <td> {{reader}} </td>
+		  {% endfor %}
+		</tr>
+		<tr class="warning">
+		  <td> writer </td>
+		  {% for writer in writer_list %}
+		  <td> {{writer}} </td>
+		  {% endfor %}
+		</tr>
+	  </table>
+	</div>
+  </body>
+</html>
