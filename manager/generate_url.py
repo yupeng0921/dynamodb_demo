@@ -1,27 +1,24 @@
 #! /usr/bin/env python
 
+import os
 import sys
 import yaml
 import sqlite3
 import random
 
-with open(u'manager_conf.yaml') as f:
+with open(u'%s/manager_conf.yaml' % os.path.split(os.path.realpath(__file__))[0], u'r') as f:
     conf = yaml.safe_load(f)
 
 batch_count = 50
-url_dir = u'url'
 name_db = conf[u'name_db']
 url_number = conf[u'url_number']
-# server_list = conf[u'server_list']
 
 server_list = []
-server_list_file = sys.argv[1]
-# change "ip-172-31-5-122.ap-northeast-1.compute.internal:"
-# to 172.31.5.122
-with open(server_list_file) as f:
+with open(u'/tmp/server_ip', u'r') as f:
     for eachline in f:
-        ip = eachline[3:].split(u'.')[0].replace(u'-',u'.')
-        server_list.add(ip)
+        ip = eachline.strip()
+        if ip:
+            server_list.append(ip)
 
 cx = sqlite3.connect(name_db)
 cu = cx.cursor()
@@ -34,8 +31,8 @@ while True:
     rets = cu.fetchmany(url_number)
     if len(rets) < url_number:
         break
-    f_download = open(u'%s/download_url_%d.txt' % (url_dir, i), u'w')
-    f_upload = open(u'%s/upload_url_%d.txt' % (url_dir, i), u'w')
+    f_download = open(u'/srv/salt/url/download_url_%d.txt' % i, u'w')
+    f_upload = open(u'/srv/salt/url//upload_url_%d.txt' % i, u'w')
     i += 1
     j = 0
     for ret in rets:

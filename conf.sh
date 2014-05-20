@@ -3,7 +3,7 @@
 bucket_name='jenny-test'
 region='ap-northeast-1'
 dir_name='dynamodb_demo'
-stack_name="test7"
+stack_name="test1"
 key_name="penyu1"
 resource_link="https://s3-ap-southeast-1.amazonaws.com/jenny-test/dynamodb_demo.zip"
 read_capacity_units="1000"

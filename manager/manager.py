@@ -12,9 +12,14 @@ with open(u'manager_conf.yaml') as f:
     conf = yaml.safe_load(f)
 
 pid_file = conf[u'pid_file']
-server_list = conf[u'server_list']
-client_list = conf[u'client_list']
 concurrent_number = int(conf[u'concurrent_number'])
+
+client_list = []
+with open(u'/tmp/server_ip', u'r') as f:
+    for eachline in f:
+        ip = eachline.strip()
+        if ip:
+            client_list.append(ip)
 
 app = Flask(__name__)
 

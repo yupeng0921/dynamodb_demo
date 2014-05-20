@@ -8,6 +8,7 @@ yum install -y nginx
 yum install -y python-pip
 yum install -y gcc
 yum install -y python-devel
+yum install -y perl-libwww-perl # for GET command
 pip install flask
 pip install uwsgi
 
