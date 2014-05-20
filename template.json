@@ -24,7 +24,7 @@
         },
         "ServerInstanceType" : {
             "Type" : "String",
-            "Default" : "m3.2xlarge",
+            "Default" : "c3.2xlarge",
             "Description" : "server instance type"
         },
         "ClientInstanceType" : {
@@ -34,7 +34,7 @@
         },
         "ServerInstanceNumber" : {
             "Type" : "Number",
-            "Default" : "8",
+            "Default" : "4",
             "Description" : "server instance number"
         },
         "ClientInstanceNumber" : {
@@ -46,6 +46,26 @@
             "Type" : "String",
             "Default" : "m1.small",
             "Description" : "manager instance type"
+        },
+        "NameDB" : {
+            "Type" : "String",
+            "Default" : "name_1M.db",
+            "Description" : "sqlite db store name"
+        },
+        "CountPerUser" : {
+            "Type" : "String",
+            "Default" : "10",
+            "Description" : "every user name has how many items"
+        },
+        "ConcurrentNumber" : {
+            "Type" : "String",
+            "Default" : "500",
+            "Description" : "concurrent per client"
+        },
+        "UrlNumber" : {
+            "Type" : "String",
+            "Default" : "2000",
+            "Description" : "how many url in url list for http_load"
         }
     },
 
@@ -85,6 +105,12 @@
                         "IpProtocol" :  "tcp",
                         "FromPort" : "80",
                         "ToPort" : "80",
+                        "CidrIp" : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" :  "tcp",
+                        "FromPort" : "4505",
+                        "ToPort" : "4506",
                         "CidrIp" : "0.0.0.0/0"
                     },
                     {
@@ -162,29 +188,22 @@
                 "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
                 "UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
                     "#!/bin/bash", "\n",
-                    "yum update -y\n",
-                    "# Helper function\n",
-                    "function error_exit\n",
-                    "{\n",
-                    "  /opt/aws/bin/cfn-signal -e 1 -r \"$1\" '", { "Ref" : "ServerWaitHandle" }, "'\n",
-                    "  exit 1\n",
-                    "}\n",
-                    "cd /opt\n",
+                    "yum update -y", "\n",
+                    "cd /opt", "\n",
                     "wget ",
                     " ", { "Ref" : "ResourceLink" },
-                    " 2>&1\n",
+                    " 2>&1", "\n",
                     "filename=$(basename ", { "Ref" : "ResourceLink" }, ")\n",
-                    "unzip $filename\n",
-                    "cd ${filename%.*}\n",
-                    "result=`./server_setup.sh",
+                    "unzip $filename", "\n",
+                    "cd ${filename%.*}", "\n",
+                    "cd server", "\n",
+                    "./server_setup.sh",
                     " ", { "Fn::GetAtt" : [ "ManagerInstance", "PublicIp" ] },
                     " ", { "Ref" : "DynamoDB" },
                     " ", { "Ref" : "AWS::Region" },
-                    " 2>&1`\n",
-                    "[ \"$result\" == \"\" ] || error_exit \"server_setup.sh failed, $result\"\n",
+                    " > /tmp/setup.log 2>&1", "\n",
                     "# All is well so signal success\n",
-                    "/opt/aws/bin/cfn-signal -e 0 -r \"server setup complete\" '", { "Ref" : "ServerWaitHandle" }, "'\n",
-                    "reboot\n"
+                    "/opt/aws/bin/cfn-signal -e 0 -r \"server setup complete\" '", { "Ref" : "ServerWaitHandle" }, "'\n"
                     ] ] }
                 }
             }
@@ -225,27 +244,19 @@
                 "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
                 "UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
                     "#!/bin/bash", "\n",
-                    "yum update -y\n",
-                    "# Helper function\n",
-                    "function error_exit\n",
-                    "{\n",
-                    "  /opt/aws/bin/cfn-signal -e 1 -r \"$1\" '", { "Ref" : "ClientWaitHandle" }, "'\n",
-                    "  exit 1\n",
-                    "}\n",
-                    "cd /opt\n",
+                    "yum update -y", "\n",
+                    "cd /opt", "\n",
                     "wget ",
                     " ", { "Ref" : "ResourceLink" },
-                    " 2>&1\n",
+                    " 2>&1", "\n",
                     "filename=$(basename ", { "Ref" : "ResourceLink" }, ")\n",
-                    "unzip $filename\n",
-                    "cd ${filename%.*}\n",
-                    "result=`./client_setup.sh",
+                    "unzip $filename", "\n",
+                    "cd ${filename%.*}", "\n",
+                    "cd client", "\n",
+                    "./client_setup.sh",
                     " ", { "Fn::GetAtt" : [ "ManagerInstance", "PublicIp" ] },
-                    " 2>&1`\n",
-                    "[ \"$result\" == \"\" ] || error_exit \"client_setup.sh failed, $result\"\n",
-                    "# All is well so signal success\n",
-                    "/opt/aws/bin/cfn-signal -e 0 -r \"client setup complete\" '", { "Ref" : "ClientWaitHandle" }, "'\n",
-                    "reboot\n"
+                    " > /tmp/setup.log 2>&1", "\n",
+                    "/opt/aws/bin/cfn-signal -e 0 -r \"client setup complete\" '", { "Ref" : "ClientWaitHandle" }, "'\n"
                     ] ] }
                 }
             }
@@ -286,24 +297,25 @@
                 "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
                 "UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
                     "#!/bin/bash", "\n",
-                    "yum update -y\n",
-                    "# Helper function\n",
-                    "function error_exit\n",
-                    "{\n",
-                    "  /opt/aws/bin/cfn-signal -e 1 -r \"$1\" '", { "Ref" : "ManagerWaitHandle" }, "'\n",
-                    "  exit 1\n",
-                    "}\n",
-                    "cd /opt\n",
+                    "yum update -y", "\n",
+                    "cd /opt", "\n",
                     "wget ",
                     " ", { "Ref" : "ResourceLink" },
-                    " 2>&1\n",
+                    " 2>&1", "\n",
                     "filename=$(basename ", { "Ref" : "ResourceLink" }, ")\n",
-                    "unzip $filename\n",
-                    "cd ${filename%.*}\n",
-                    "result=`./manager_setup.sh",
-                    " 2>&1`\n",
-                    "[ \"$result\" == \"\" ] || error_exit \"manager_setup.sh failed, $result\"\n",
-                    "# All is well so signal success\n",
+                    "unzip $filename", "\n",
+                    "cd ${filename%.*}", "\n",
+					"cd manager", "\n",
+                    "./manager_setup.sh",
+                    " ", { "Ref" : "DynamoDB" },
+                    " ", { "Ref" : "AWS::Region" },
+                    " ", { "Ref" : "ServerInstanceNumber" },
+                    " ", { "Ref" : "ClientInstanceNumber" },
+                    " ", { "Ref" : "NameDB" },
+                    " ", { "Ref" : "CountPerUser" },
+                    " ", { "Ref" : "ConcurrentNumber" },
+                    " ", { "Ref" : "UrlNumber" },
+                    " > /tmp/setup.log 2>&1", "\n",
                     "/opt/aws/bin/cfn-signal -e 0 -r \"manager setup complete\" '", { "Ref" : "ManagerWaitHandle" }, "'\n"
                     ] ] }
                 }

@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import os
 import time
 import yaml
 import random
@@ -9,7 +10,7 @@ import boto
 import boto.dynamodb2
 from boto.dynamodb2.table import Table
 
-with open(u'server_conf.yaml', 'r') as f:
+with open(u'%s/server_conf.yaml' % os.path.split(os.path.realpath(__file__))[0], u'r') as f:
     conf = yaml.safe_load(f)
 
 region = conf[u'region']

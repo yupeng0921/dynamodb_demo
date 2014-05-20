@@ -207,6 +207,11 @@ def index():
 @app.route(u'/client_info')
 def client_info():
     return render_template(u'client_info.html', idle_list=idle_list, reader_list=reader_list, writer_list=writer_list)
+
+@app.route(u'/register', methods=[u'GET', u'POST'])
+def register():
+    if request.method == u'POST':
+        
 if __name__ == u'__main__':
     app.debug = True
     app.run(host=u'0.0.0.0', port=80)

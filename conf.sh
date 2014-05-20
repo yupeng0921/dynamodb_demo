@@ -13,4 +13,7 @@ client_instance_type="m1.small"
 manager_instance_type="m1.small"
 server_instance_number="1"
 client_instance_number="1"
-
+name_db="name_20K.db"
+count_per_user="1"
+concurrent_number="500"
+url_number="2000"

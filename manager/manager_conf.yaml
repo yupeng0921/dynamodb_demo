@@ -1,35 +1,6 @@
-pid_file: /tmp/manager_daemon.pid
-table_name: game_beta
-region: ap-northeast-1
-name_db: name_1M.db
-count_per_user: 10
-batch_count: 50
-concurrent_number: 500
-url_dir: url
-url_number: 2000
-server_list:
-  - 172.31.4.9
-  - 172.31.7.219
-  - 172.31.7.218
-  - 172.31.7.213
-  - 172.31.7.215
-  - 172.31.7.217
-  - 172.31.7.216
-  - 172.31.7.214
-client_list:
-  - 54.178.220.106
-  - 54.178.222.125
-  - 54.178.222.127
-  - 54.178.222.126
-  - 54.178.220.45
-  - 54.178.223.70
-  - 54.178.214.43
-  - 54.178.220.175
-  - 54.178.220.47
-  - 54.178.222.128
-  - 54.178.223.64
-  - 54.178.222.76
-  - 54.178.221.129
-  - 54.178.223.67
-  - 54.178.221.108
-  - 54.178.216.154
+table_name: replace_by_table_name
+region: replace_by_region
+name_db: replace_by_name_db
+count_per_user: replace_by_count_per_user
+concurrent_number: replace_by_concurrent_number
+url_number: replace_by_url_number

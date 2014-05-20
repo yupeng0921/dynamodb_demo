@@ -1,16 +1,12 @@
 #! /usr/bin/env python
 
 import sys
-import yaml
 import signal
 import names
 import sqlite3
 
-with open(u'name_conf.yaml') as f:
-    conf = yaml.safe_load(f)
-
-name_count = conf[u'name_count']
-name_db = conf[u'name_db']
+name_count = int(sys.argv[1])
+name_db = sys.argv[2]
 
 cx = sqlite3.connect(name_db)
 cu = cx.cursor()
@@ -38,6 +34,7 @@ while i < name_count:
         print(u'try: %d valid: %d' % (try_count, i))
         cx.commit()
 
+print(u'try: %d valid: %d' % (try_count, i))
 cx.commit()
 cu.close()
 cx.close()

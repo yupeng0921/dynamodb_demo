@@ -10,7 +10,7 @@ import lockfile
 import logging
 import subprocess
 
-with open(u'/opt/dynamodb_demo/client_conf.yaml') as f:
+with open(u'%s/client_conf.yaml' % os.path.split(os.path.realpath(__file__))[0], u'r') as f:
     conf = yaml.safe_load(f)
 
 pid_file = conf[u'pid_file']

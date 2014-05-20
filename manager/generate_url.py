@@ -1,16 +1,28 @@
 #! /usr/bin/env python
 
+import sys
 import yaml
 import sqlite3
 import random
 
 with open(u'manager_conf.yaml') as f:
-        conf = yaml.safe_load(f)
+    conf = yaml.safe_load(f)
 
+batch_count = 50
+url_dir = u'url'
 name_db = conf[u'name_db']
 url_number = conf[u'url_number']
-url_dir = conf[u'url_dir']
-server_list = conf[u'server_list']
+# server_list = conf[u'server_list']
+
+server_list = []
+server_list_file = sys.argv[1]
+# change "ip-172-31-5-122.ap-northeast-1.compute.internal:"
+# to 172.31.5.122
+with open(server_list_file) as f:
+    for eachline in f:
+        ip = eachline[3:].split(u'.')[0].replace(u'-',u'.')
+        server_list.add(ip)
+
 cx = sqlite3.connect(name_db)
 cu = cx.cursor()
 

@@ -1,2 +1,2 @@
-region: server_region
-table_name: server_table_name
+region: replace_by_region
+table_name: replace_by_table_name

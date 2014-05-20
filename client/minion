@@ -1,0 +1,4 @@
+master: replace_by_manager_ip
+grains:
+  roles:
+    - client
