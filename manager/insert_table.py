@@ -16,7 +16,7 @@ table_name = conf[u'table_name']
 region = conf[u'region']
 name_db = conf[u'name_db']
 count_per_user = conf[u'count_per_user']
-batch_count = conf[u'batch_count']
+batch_count = 50
 
 year = 2014
 last_month = 4
@@ -59,7 +59,10 @@ def do_insert():
                     score = generate_score()
                     batch.put_item(data={u'name':name, u'date':date, u'score':score})
                     count += 1
-        print(count)
+        with open(u'/tmp/insert_count', u'w') as f:
+            f.write(u'%s\n' % unicode(count))
+    with open(u'/tmp/insert_count', u'a') as f:
+        f.write(u'done\n')
     
 if __name__ == u'__main__':
     do_insert()

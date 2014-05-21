@@ -5,6 +5,12 @@ echo $* >> /tmp/parameters.txt
 manager_ip=$1
 table_name=$2
 region=$3
+stack_name=$4
+
+yum install -y perl-libwww-perl # for GET command
+instance_id=`GET 169.254.169.254/latest/meta-data/instance-id`
+instance_name="$stack_name""_server"
+/usr/bin/aws ec2 create-tags --resources $instance_id --tags Key=Name,Value=$instance_name --region $region
 
 yum install -y nginx
 yum install -y python-pip
@@ -24,7 +30,7 @@ chkconfig nginx on
 
 ec2_uid=`awk 'BEGIN {FS=":"} {if($1=="ec2-user")print $3}' /etc/passwd`
 
-cmd="ulimit -n 65536; cd /opt/dynamodb_demo/server; uwsgi --socket 127.0.0.1:3031 --wsgi-file server.py --callable app --processes 8 --threads 512 --stats 127.0.0.1:9191 --uid $ec2_uid -d /opt/dynamodb_demo/uwsgi.log -L"
+cmd="ulimit -n 65536; cd /opt/dynamodb_demo/server; uwsgi --socket 127.0.0.1:3031 --wsgi-file server.py --callable app --processes 8 --threads 512 --stats 127.0.0.1:9191 --uid $ec2_uid -d /opt/dynamodb_demo/uwsgi.log -L --cpu-affinity 1"
 
 echo "$cmd" >> /etc/rc.local
 

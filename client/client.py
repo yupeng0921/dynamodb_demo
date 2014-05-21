@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import os
+import time
 import json
 import yaml
 import signal
@@ -70,11 +71,17 @@ def index():
 
 @app.route(u'/result', methods=[u'GET'])
 def result():
-    try:
-        with open(result_file, u'r') as f:
-            result = f.read()
-    except Exception, e:
-        result = u'no data'
+    retry_count = 10
+    while retry_count > 0:
+        try:
+            with open(result_file, u'r') as f:
+                result = f.read()
+        except Exception, e:
+            result = u'no data'
+            break
+        if result:
+            break
+        time.sleep(0.01)
     return result
 
 @app.route(u'/raw_result', methods=[u'GET'])

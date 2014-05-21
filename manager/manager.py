@@ -11,11 +11,11 @@ from flask import Flask, request, redirect, url_for, render_template, abort, Res
 with open(u'manager_conf.yaml') as f:
     conf = yaml.safe_load(f)
 
-pid_file = conf[u'pid_file']
 concurrent_number = int(conf[u'concurrent_number'])
+lagest_index = int(conf[u'lagest_index'])
 
 client_list = []
-with open(u'/tmp/server_ip', u'r') as f:
+with open(u'/tmp/client_ip', u'r') as f:
     for eachline in f:
         ip = eachline.strip()
         if ip:
@@ -41,11 +41,11 @@ def stop_all():
 stop_all()
 
 
-task_index = random.randint(0,500)
+task_index = random.randint(0,lagest_index-1)
 def get_task_index():
     global task_index
     task_index += 1
-    task_index %= 500
+    task_index %= lagest_index
     return task_index
 
 def increase_reader(num):
@@ -173,6 +173,12 @@ def writer_latency():
     value = get_writer_latency()
     return json.dumps({'value':value})
 
+@app.route(u'/status')
+def status():
+    with open(u'/tmp/insert_count', u'r') as f:
+        status = f.read()
+    return render_template(u'status.html', status=status)
+
 @app.route(u'/', methods=[u'GET', u'POST'])
 def index():
     if request.method == u'POST':
@@ -213,10 +219,6 @@ def index():
 def client_info():
     return render_template(u'client_info.html', idle_list=idle_list, reader_list=reader_list, writer_list=writer_list)
 
-@app.route(u'/register', methods=[u'GET', u'POST'])
-def register():
-    if request.method == u'POST':
-        
 if __name__ == u'__main__':
     app.debug = True
     app.run(host=u'0.0.0.0', port=80)

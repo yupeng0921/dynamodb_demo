@@ -1,4 +1,6 @@
-var max_concurrent = 4000
+var read_capacity_units = replace_by_read_capacity_units
+var write_capacity_units = replace_by_write_capacity_units
+
 $(function () {
 		$(document).ready(function() {
 				Highcharts.setOptions({
@@ -37,7 +39,7 @@ $(function () {
 								},
 							yAxis: {
 						min: 0,
-								max: max_concurrent,
+								max: read_capacity_units,
 						title: {
 							text: 'Value'
 									},
@@ -203,7 +205,7 @@ $(function () {
 								},
 							yAxis: {
 						min: 0,
-								max: max_concurrent,
+								max: write_capacity_units,
 						title: {
 							text: 'Value'
 									},

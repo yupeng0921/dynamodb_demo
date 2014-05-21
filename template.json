@@ -160,6 +160,11 @@
                                     { "Ref" : "DynamoDB" },
                                     "/*"
                                 ] ] }
+                            },
+                            {
+                                "Effect" : "Allow",
+                                "Action" : "ec2:*",
+                                "Resource" : "*"
                             }
                         ]
                     }
@@ -201,6 +206,7 @@
                     " ", { "Fn::GetAtt" : [ "ManagerInstance", "PublicIp" ] },
                     " ", { "Ref" : "DynamoDB" },
                     " ", { "Ref" : "AWS::Region" },
+                    " ", { "Ref" : "AWS::StackName" },
                     " > /tmp/setup.log 2>&1", "\n",
                     "# All is well so signal success\n",
                     "/opt/aws/bin/cfn-signal -e 0 -r \"server setup complete\" '", { "Ref" : "ServerWaitHandle" }, "'\n"
@@ -255,6 +261,8 @@
                     "cd client", "\n",
                     "./client_setup.sh",
                     " ", { "Fn::GetAtt" : [ "ManagerInstance", "PublicIp" ] },
+                    " ", { "Ref" : "AWS::Region" },
+                    " ", { "Ref" : "AWS::StackName" },
                     " > /tmp/setup.log 2>&1", "\n",
                     "/opt/aws/bin/cfn-signal -e 0 -r \"client setup complete\" '", { "Ref" : "ClientWaitHandle" }, "'\n"
                     ] ] }
@@ -315,6 +323,9 @@
                     " ", { "Ref" : "CountPerUser" },
                     " ", { "Ref" : "ConcurrentNumber" },
                     " ", { "Ref" : "UrlNumber" },
+                    " ", { "Ref" : "ReadCapacityUnits" },
+                    " ", { "Ref" : "WriteCapacityUnits" },
+                    " ", { "Ref" : "AWS::StackName" },
                     " > /tmp/setup.log 2>&1", "\n",
                     "/opt/aws/bin/cfn-signal -e 0 -r \"manager setup complete\" '", { "Ref" : "ManagerWaitHandle" }, "'\n"
                     ] ] }

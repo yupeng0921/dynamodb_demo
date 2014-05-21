@@ -47,7 +47,8 @@ def do_job(task_file):
     cmd = u'/opt/dynamodb_demo/client/http_load/http_load -p %s -r %s -s %s /opt/dynamodb_demo/client/url/%s_url_%s.txt' % \
         (concurrent, concurrent, interval, action, index)
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    ret = p.wait()
+    timeout = 2 * int(interval)
+    ret = p.wait(timeout=timeout)
     result = p.stdout.readlines()
     with open(raw_result_file, u'w') as f:
         for line in result:
