@@ -10,6 +10,8 @@ name_db=$5
 count_per_user=$6
 concurrent_number=$7
 url_number=$8
+interval=$9
+shift 1
 read_capacity_units=$9
 shift 1
 write_capacity_units=$9
@@ -79,6 +81,7 @@ sed -i "s/replace_by_name_db/$name_db/g" manager_conf.yaml
 sed -i "s/replace_by_count_per_user/$count_per_user/g" manager_conf.yaml
 sed -i "s/replace_by_concurrent_number/$concurrent_number/g" manager_conf.yaml
 sed -i "s/replace_by_url_number/$url_number/g" manager_conf.yaml
+sed -i "s/replace_by_interval/$interval/g" manager_conf.yaml
 sed -i "s/replace_by_read_capacity_units/$read_capacity_units/g" static/js/load_chart.js
 sed -i "s/replace_by_write_capacity_units/$write_capacity_units/g" static/js/load_chart.js
 

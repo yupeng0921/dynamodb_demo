@@ -1,9 +1,9 @@
 #! /bin/bash
 
-bucket_name='jenny-test'
+bucket_name='yupengpublic'
 region='ap-northeast-1'
 dir_name='dynamodb_demo'
-stack_name="test7"
+stack_name="gaming"
 key_name="penyu1"
 resource_link="https://s3-ap-southeast-1.amazonaws.com/jenny-test/dynamodb_demo.zip"
 read_capacity_units="2000"
@@ -17,3 +17,4 @@ name_db="name_20K.db"
 count_per_user="10"
 concurrent_number="500"
 url_number="2000"
+interval="5"

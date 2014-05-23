@@ -13,6 +13,7 @@ with open(u'manager_conf.yaml') as f:
 
 concurrent_number = int(conf[u'concurrent_number'])
 lagest_index = int(conf[u'lagest_index'])
+interval = int(conf[u'interval'])
 
 client_list = []
 with open(u'/tmp/client_ip', u'r') as f:
@@ -38,8 +39,9 @@ def stop_all():
         print(ret)
         idle_list.append(ip)
 
-stop_all()
-
+# stop_all()
+for ip in client_list:
+    idle_list.append(ip)
 
 task_index = random.randint(0,lagest_index-1)
 def get_task_index():

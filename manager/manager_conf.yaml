@@ -5,3 +5,4 @@ count_per_user: replace_by_count_per_user
 concurrent_number: replace_by_concurrent_number
 url_number: replace_by_url_number
 lagest_index: replace_by_lagest_index
+interval: replace_by_interval
