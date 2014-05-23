@@ -1,0 +1,623 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+%\usetheme{Warsaw}
+%\usetheme{Boadilla}
+%\usetheme{Darmstadt}
+\usetheme{Madrid}
+% or ...
+
+\usecolortheme{orchid}
+\setbeamertemplate{footline}[text line]{} % makes the footer EMPTY
+
+\setbeamercovered{transparent}
+% or whatever (possibly just delete it)
+\end_preamble
+\options cjk
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman lmodern
+\font_sans helvet
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\font_cjk gbsn
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\pdf_bookmarks true
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen true
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=black, citecolor=black, urlcolor=blue, filecolor=blue,pdfpagelayout=OneColumn, pdfnewwindow=true,pdfstartview=XYZ, plainpages=false"
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Dynamodb Demo
+\end_layout
+
+\begin_layout Author
+yupeng
+\end_layout
+
+\begin_layout Date
+05/23/14
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+AtBeginSection[]{
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\backslash
+frame<beamer>{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+frametitle{Main Sections}   
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+tableofcontents[currentsection] 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Contents
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduce
+\end_layout
+
+\begin_layout BeginFrame
+Architecure summary
+\end_layout
+
+\begin_layout Standard
+The demo has 4 components.
+\end_layout
+
+\begin_layout Itemize
+A dynamodb, store 10M lines data.
+ The data schema is “name(string) date(string) score(int)”.
+ It simulates a gaming database.
+ Every user has a name, and many gaming scores ranged by date.
+\end_layout
+
+\begin_layout Itemize
+Servers, simulate a gaming web server, provide a web interface to access
+ the dynamodb
+\end_layout
+
+\begin_layout Itemize
+Clients, using http_load generate workload to servers, http_load is an opensourc
+e web benchmark tool, we use it examine the servers' respond latency.
+\end_layout
+
+\begin_layout Itemize
+Manager, provide an interface to user, send command to clients, let clients
+ generate workload by using http_load, and get the http_load result.
+\end_layout
+
+\begin_layout BeginFrame
+Architecture Picture
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename dynamodb_arch.png
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Deploy
+\end_layout
+
+\begin_layout BeginFrame
+Cloudfromation template
+\end_layout
+
+\begin_layout Standard
+The demo envornment can be deploied from a cloudformation template, the
+ template address is: 
+\begin_inset CommandInset href
+LatexCommand href
+name "dynamodb_demo_link"
+target "https://s3-us-west-2.amazonaws.com/yupengpublic/dynamodb_demo.json"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Launch template
+\end_layout
+
+\begin_layout Standard
+Launch the template in the cloudformation console:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename create_stack.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Template parameters
+\end_layout
+
+\begin_layout Standard
+The template has several parameters.
+ Most of them have default values.
+ Only several parameters need to be set:
+\end_layout
+
+\begin_layout Itemize
+KeyName, the keypair used for launch ec2 instance
+\end_layout
+
+\begin_layout Itemize
+ReadCapacityUnits and WriteCapacityUnits, the dynamodb read/write capacity
+\end_layout
+
+\begin_layout Itemize
+ServerInstanceNumber and ClientInstanceNumber, if the ReadCapacityUnits
+ and WriteCapacityUnits are 2000, set ServerInstanceNumber to 4, set ClientInsta
+nceNumber to 8, if the ReadCapacityUnits and WriteCapacityUnits are 4000,
+ set ServerInstanceNumber to 8, set ClientInstanceNumber to 16
+\end_layout
+
+\begin_layout BeginFrame
+Parameter graph
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename parameter.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Check cloudformation Outputs
+\end_layout
+
+\begin_layout Standard
+After the cloudformation launched complete, check the manager instance IP
+ address in its Outputs
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename output.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Check http://ManagerIP/status
+\end_layout
+
+\begin_layout Standard
+After the cloudformation launched, the manager instance will start to insert
+ data to dynamodb, the http://ManagerIP/status indicate how many items are
+ inserted.
+ Seeing 'done' in that page indicate the insert complete, and we can start
+ to demo.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename status.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Demo
+\end_layout
+
+\begin_layout BeginFrame
+Table information
+\end_layout
+
+\begin_layout Standard
+See the table information in the dynamodb console, examine the item count:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename table_information.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Manager Interface
+\end_layout
+
+\begin_layout Standard
+Input the manager instance's public in the web browser, you can get such
+ an interface:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename manager_interface.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Generate read workload
+\end_layout
+
+\begin_layout Standard
+Input 500, 1000, 1500, 2000 to the first form, and type 
+\begin_inset Quotes eld
+\end_inset
+
+Submit Readers
+\begin_inset Quotes erd
+\end_inset
+
+ can genreate 500, 1000, 1500, 2000 concurrent read to the dynamodb.
+ The smallest grant size is 500, you can't set to other value.
+ The graph in the left top cornor show the concurrent read amount, and the
+ graph in the right top cornor show the average read latency from the client
+ perspective.
+ Input 0 and submit the form will stop the workload.
+\end_layout
+
+\begin_layout BeginFrame
+Read workload screenshot
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename read.png
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Generate write workload
+\end_layout
+
+\begin_layout Standard
+Input 500, 1000, 1500, 2000 to the second form, and type 
+\begin_inset Quotes eld
+\end_inset
+
+Submit Writers
+\begin_inset Quotes erd
+\end_inset
+
+ can generate 500, 1000, 1500, 2000 concurrent write to the dynamodb.
+ The smallest grant size is 500, you can't set to other value.
+ The graph in the left bottom cornor show the concurrent write amount, and
+ the graph in the right bottom cornor show the average write latency from
+ the client perspective.
+\end_layout
+
+\begin_layout BeginFrame
+Write workload screenshot
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename write.png
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+The dynamodb latency
+\end_layout
+
+\begin_layout Standard
+Check the dynamodb latency in cloudwatch
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename latency.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+The http_load raw result
+\end_layout
+
+\begin_layout Standard
+Check the server_ip/client_info page, we can see the ip address of the reader
+ client, writer client and idle client
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename client_info.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Check http_load raw result from client
+\end_layout
+
+\begin_layout Standard
+From the ip address in server_ip/client_info page, we can choose a client,
+ access the client_ip/raw_result page:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename raw_result.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+More details
+\end_layout
+
+\begin_layout BeginFrame
+The demo soruce code
+\end_layout
+
+\begin_layout Standard
+You can get the soruce code from github:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/yupeng820921/dynamodb_demo.git"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I also upload it to the S3:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+target "https://s3-us-west-2.amazonaws.com/yupengpublic/dynamodb_demo.zip"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The cloudformation has a parameter 
+\begin_inset Quotes eld
+\end_inset
+
+ResourceLink
+\begin_inset Quotes erd
+\end_inset
+
+, it indicate where the server/client/manager instance should get the soruce
+ code.
+ You can modify the soruce code and upload to another place, and set the
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ResouceLink
+\begin_inset Quotes erd
+\end_inset
+
+ to another value.
+\end_layout
+
+\begin_layout BeginFrame
+Manage name
+\end_layout
+
+\begin_layout Standard
+In the source code directory, we have a name_1M.db and name_20K.db.
+ The name_1M.db have 1M random name, and name_20K.db have 20K random name.
+ By default, manager will use name_1M.db, upload 10 “name(string) date(string)
+ score(int)” items per name.
+ If you want to change the name count, you can use the generate_name.py generate
+ a new name db, store it to the source code directory, upload the new soruce
+ code directory to S3, specific the filename of the 
+\begin_inset Quotes eld
+\end_inset
+
+NameDB
+\begin_inset Quotes erd
+\end_inset
+
+ parameter in cloudformation template.
+ By default, the manager will upload 10 items per name, if you want to change
+ it, you can assin a new value to 
+\begin_inset Quotes eld
+\end_inset
+
+CountPerUser
+\begin_inset Quotes erd
+\end_inset
+
+ parameter.
+\end_layout
+
+\begin_layout BeginFrame
+http_load parameters
+\end_layout
+
+\begin_layout Standard
+We call http_load by such parameters:
+\end_layout
+
+\begin_layout Quote
+http_load -p concurrent_number -r concurrent_number -s interval url_list.txt
+\end_layout
+
+\begin_layout Standard
+The ConcurrentNumber and Interval parameters in the template wil be pass
+ to the above command, and the UrlNumber parameter will be used to specific
+ how many urls will be placed in a url_list.txt file.
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document
