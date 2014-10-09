@@ -102,7 +102,7 @@ chkconfig nginx on
 cmd="cd /opt/dynamodb_demo/manager; uwsgi --socket 127.0.0.1:3031 --wsgi-file manager.py --callable app --processes 1 --threads 1 --stats 127.0.0.1:9191 -d /opt/dynamodb_demo/uwsgi.log"
 
 echo "$cmd" > run.sh
-echo "bash /opt/dynamodb_demo/manage/run.sh" >> /etc/rc.local
+echo "bash /opt/dynamodb_demo/manager/run.sh" >> /etc/rc.local
 bash run.sh
 
 salt '*' cmd.run 'reboot'
