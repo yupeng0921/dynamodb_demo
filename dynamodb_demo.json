@@ -178,6 +178,11 @@
                                 "Effect" : "Allow",
                                 "Action" : "ec2:*",
                                 "Resource" : "*"
+                            },
+                            {
+                                "Effect" : "Allow",
+                                "Action": "autoscaling:*",
+                                "Resource" : "*"
                             }
                         ]
                     }
@@ -233,7 +238,7 @@
             "Properties" : {
                 "AvailabilityZones" : { "Fn::GetAZs" : "" },
                 "LaunchConfigurationName" : { "Ref" : "ServerLaunchConfiguration" },
-                "MinSize" : { "Ref" : "ServerInstanceNumber" },
+                "MinSize" : "0",
                 "MaxSize" : { "Ref" : "ServerInstanceNumber" },
                 "DesiredCapacity" : { "Ref" : "ServerInstanceNumber" }
             }
@@ -288,7 +293,7 @@
             "Properties" : {
                 "AvailabilityZones" : { "Fn::GetAZs" : "" },
                 "LaunchConfigurationName" : { "Ref" : "ClientLaunchConfiguration" },
-                "MinSize" : { "Ref" : "ClientInstanceNumber" },
+                "MinSize" : "0",
                 "MaxSize" : { "Ref" : "ClientInstanceNumber" },
                 "DesiredCapacity" : { "Ref" : "ClientInstanceNumber" }
             }

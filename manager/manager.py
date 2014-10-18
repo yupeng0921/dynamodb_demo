@@ -6,6 +6,7 @@ import json
 import copy
 import random
 import requests
+import boto.ec2
 from flask import Flask, request, redirect, url_for, render_template, abort, Response
 
 with open(u'manager_conf.yaml') as f:
@@ -14,6 +15,8 @@ with open(u'manager_conf.yaml') as f:
 concurrent_number = int(conf[u'concurrent_number'])
 lagest_index = int(conf[u'lagest_index'])
 interval = int(conf[u'interval'])
+region = conf['region']
+conn = boto.ec2.connect_to_region(region)
 
 client_list = []
 with open(u'/tmp/client_ip', u'r') as f:
@@ -217,9 +220,23 @@ def index():
         return redirect(url_for(u'index'))
     return render_template(u'index.html')
 
+def get_public_ip_list(private_ip_list):
+    public_ip_list = []
+    for private_ip in private_ip_list:
+        rs=conn.get_all_instances(filters={'private_ip_address':private_ip})
+        ip = rs[0].instances[0].ip_address
+        public_ip_list.append(ip)
+    return public_ip_list
+
 @app.route(u'/client_info')
 def client_info():
-    return render_template(u'client_info.html', idle_list=idle_list, reader_list=reader_list, writer_list=writer_list)
+    idle_public_ip_list = get_public_ip_list(idle_list)
+    reader_public_ip_list = get_public_ip_list(reader_list)
+    writer_public_ip_list = get_public_ip_list(writer_list)
+    return render_template(u'client_info.html',
+                           idle_list=idle_public_ip_list,
+                           reader_list=reader_public_ip_list,
+                           writer_list=writer_public_ip_list)
 
 if __name__ == u'__main__':
     app.debug = True

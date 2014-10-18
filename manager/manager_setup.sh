@@ -73,7 +73,9 @@ while true; do
 done
 
 salt -G 'roles:server' test.ping | grep internal | awk -F . '{a=substr($1,4);gsub("-",".",a);print a}' > /tmp/server_ip
-salt -G 'roles:client' cmd.run 'GET 169.254.169.254/latest/meta-data/public-ipv4' | grep -v internal > /tmp/client_ip
+salt -G 'roles:client' test.ping | grep internal | awk -F . '{a=substr($1,4);gsub("-",".",a);print a}' > /tmp/client_ip
+salt -G 'roles:server' cmd.run 'GET 169.254.169.254/latest/meta-data/instance-id' | grep -v internal > /tmp/server_id
+salt -G 'roles:client' cmd.run 'GET 169.254.169.254/latest/meta-data/instance-id' | grep -v internal > /tmp/client_id
 
 sed -i "s/replace_by_table_name/$table_name/g" manager_conf.yaml
 sed -i "s/replace_by_region/$region/g" manager_conf.yaml
