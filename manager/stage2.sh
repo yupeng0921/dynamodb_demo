@@ -18,8 +18,14 @@ shift 1
 write_capacity_units=$9
 shift 1
 stack_name=$9
+shift 1
+bucket_name=$9
 
-python re_generate_template.py $stack_name $region
+python re_generate_template.py $stack_name $bucket_name $region
+
+if [ $? -ne 0 ]; then
+	exit 1
+fi
 
 timeout_count=1200
 i=0

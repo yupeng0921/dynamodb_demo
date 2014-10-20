@@ -4,10 +4,13 @@ import sys
 import time
 import json
 from jinja2 import Template
+import boto
+from boto.s3.key import Key
 import boto.cloudformation
 
 stack_name = sys.argv[1]
-region = sys.argv[2]
+bucket_name = sys.argv[2]
+region = sys.argv[3]
 
 conn = boto.cloudformation.connect_to_region(region)
 
@@ -57,14 +60,27 @@ template_dict = json.loads(template_string)
 
 body_dict['Resources'].update(template_dict)
 
-body_updated = json.dumps(body_dict)
+body_updated = json.dumps(body_dict, indent=4)
+
 with open('/tmp/body_updated.json', 'w') as f:
     f.write(body_updated)
+
+update_template_name = 'update.json'
+s3_conn = boto.s3.connect_to_region(region)
+b = s3_conn.get_bucket(bucket_name)
+k = Key(b)
+k.key = update_template_name
+k.set_contents_from_string(body_updated)
+k.set_acl('public-read')
+
+update_url = 'https://s3-%s.amazonaws.com/%s/%s' % (region, bucket_name, update_template_name)
 
 pn = []
 for p in parameters:
     pn.append((p.key,p.value))
 
-conn.update_stack(stack_name, template_body=body_updated, parameters=pn)
+conn.update_stack(stack_name, template_url=update_url, parameters=pn)
 
 waiting_stack('UPDATE_COMPLETE')
+
+k.delete()

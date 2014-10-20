@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import time
+import logging
 import yaml
 import json
 import copy
@@ -11,6 +12,10 @@ from flask import Flask, request, redirect, url_for, render_template, abort, Res
 
 with open(u'manager_conf.yaml') as f:
     conf = yaml.safe_load(f)
+
+format = '%(asctime)s - %(filename)s:%(lineno)s - %(name)s - %(message)s'
+datefmt='%Y-%m-%d %H:%M:%S'
+logging.basicConfig(filename='/tmp/manager_server.log', level=logging.DEBUG, format=format, datefmt=datefmt)
 
 concurrent_number = int(conf[u'concurrent_number'])
 lagest_index = int(conf[u'lagest_index'])
@@ -23,6 +28,7 @@ with open(u'/tmp/client_ip', u'r') as f:
     for eachline in f:
         ip = eachline.strip()
         if ip:
+            logging.info('client ip: %s' % ip)
             client_list.append(ip)
 
 app = Flask(__name__)
@@ -45,6 +51,8 @@ def stop_all():
 # stop_all()
 for ip in client_list:
     idle_list.append(ip)
+
+logging.info(str(idle_list))
 
 task_index = random.randint(0,lagest_index-1)
 def get_task_index():
@@ -230,6 +238,9 @@ def get_public_ip_list(private_ip_list):
 
 @app.route(u'/client_info')
 def client_info():
+    logging.debug(str(idle_list))
+    logging.debug(str(reader_list))
+    logging.debug(str(writer_list))
     idle_public_ip_list = get_public_ip_list(idle_list)
     reader_public_ip_list = get_public_ip_list(reader_list)
     writer_public_ip_list = get_public_ip_list(writer_list)

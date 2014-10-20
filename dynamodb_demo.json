@@ -89,6 +89,10 @@
     },
 
     "Resources" : {
+        "UpdateBucket" : {
+            "Type" : "AWS::S3::Bucket"
+        },
+
         "DynamoDB" : {
             "Type" : "AWS::DynamoDB::Table",
             "Properties" : {
@@ -237,6 +241,7 @@
                     " ", { "Ref" : "ReadCapacityUnits" },
                     " ", { "Ref" : "WriteCapacityUnits" },
                     " ", { "Ref" : "AWS::StackName" },
+                    " ", { "Ref" : "UpdateBucket" },
                     " > /tmp/setup.log 2>&1", "\n",
                     "/opt/aws/bin/cfn-signal -e 0 -r \"manager setup complete\" '", { "Ref" : "ManagerWaitHandle" }, "'\n"
                     ] ] }
