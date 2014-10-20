@@ -1,0 +1,62 @@
+{
+    {% for server in servers %}
+    "{{server}}" : {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+            "KeyName" : { "Ref" : "KeyName" },
+            "InstanceType" : { "Ref" : "ServerInstanceType" },
+            "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
+            "ImageId" : { "Fn::FindInMap" : [ "Region2Ami", { "Ref" : "AWS::Region" }, "AMI" ] },
+            "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
+            "UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
+                "#!/bin/bash", "\n",
+                "yum update -y", "\n",
+                "cd /opt", "\n",
+                "wget ",
+                " ", { "Ref" : "ResourceLink" },
+                " 2>&1", "\n",
+                "filename=$(basename ", { "Ref" : "ResourceLink" }, ")\n",
+                "unzip $filename", "\n",
+                "cd ${filename%.*}", "\n",
+                "cd server", "\n",
+                "bash ./server_setup.sh",
+                " ", { "Fn::GetAtt" : [ "ManagerInstance", "PublicIp" ] },
+                " ", { "Ref" : "DynamoDB" },
+                " ", { "Ref" : "AWS::Region" },
+                " ", { "Ref" : "AWS::StackName" },
+                " > /tmp/setup.log 2>&1", "\n"
+            ] ] } }
+        }
+    },
+    {% endfor %}
+
+    {% for client in clients %}
+    "{{client}}" : {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+            "KeyName" : { "Ref" : "KeyName" },
+            "InstanceType" : { "Ref" : "ClientInstanceType" },
+            "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
+            "ImageId" : { "Fn::FindInMap" : [ "Region2Ami", { "Ref" : "AWS::Region" }, "AMI" ] },
+            "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
+            "UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
+                "#!/bin/bash", "\n",
+                "yum update -y", "\n",
+                "cd /opt", "\n",
+                "wget ",
+                " ", { "Ref" : "ResourceLink" },
+                " 2>&1", "\n",
+                "filename=$(basename ", { "Ref" : "ResourceLink" }, ")\n",
+                "unzip $filename", "\n",
+                "cd ${filename%.*}", "\n",
+                "cd client", "\n",
+                "bash ./client_setup.sh",
+                " ", { "Fn::GetAtt" : [ "ManagerInstance", "PublicIp" ] },
+                " ", { "Ref" : "AWS::Region" },
+                " ", { "Ref" : "AWS::StackName" },
+                " > /tmp/setup.log 2>&1", "\n"
+            ] ] } }
+        }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+}

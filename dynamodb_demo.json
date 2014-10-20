@@ -183,6 +183,11 @@
                                 "Effect" : "Allow",
                                 "Action": "autoscaling:*",
                                 "Resource" : "*"
+                            },
+                            {
+                                "Effect" : "Allow",
+                                "Action": "*",
+                                "Resource" : "*"
                             }
                         ]
                     }
@@ -197,119 +202,6 @@
                 "Roles" : [ {
                     "Ref" : "InstanceRole"
                 } ]
-            }
-        },
-
-        "ServerLaunchConfiguration" : {
-            "Type" : "AWS::AutoScaling::LaunchConfiguration",
-            "Properties" : {
-                "KeyName" : { "Ref" : "KeyName" },
-				"ImageId" : { "Fn::FindInMap" : [ "Region2Ami", { "Ref" : "AWS::Region" }, "AMI" ] },
-                "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
-                "InstanceType" : { "Ref" : "ServerInstanceType"},
-                "InstanceMonitoring" : "false",
-                "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
-                "UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
-                    "#!/bin/bash", "\n",
-                    "yum update -y", "\n",
-                    "cd /opt", "\n",
-                    "wget ",
-                    " ", { "Ref" : "ResourceLink" },
-                    " 2>&1", "\n",
-                    "filename=$(basename ", { "Ref" : "ResourceLink" }, ")\n",
-                    "unzip $filename", "\n",
-                    "cd ${filename%.*}", "\n",
-                    "cd server", "\n",
-                    "bash ./server_setup.sh",
-                    " ", { "Fn::GetAtt" : [ "ManagerInstance", "PublicIp" ] },
-                    " ", { "Ref" : "DynamoDB" },
-                    " ", { "Ref" : "AWS::Region" },
-                    " ", { "Ref" : "AWS::StackName" },
-                    " > /tmp/setup.log 2>&1", "\n",
-                    "# All is well so signal success\n",
-                    "/opt/aws/bin/cfn-signal -e 0 -r \"server setup complete\" '", { "Ref" : "ServerWaitHandle" }, "'\n"
-                    ] ] }
-                }
-            }
-        },
-
-        "ServerAutoScalingGroup" : {
-            "Type" : "AWS::AutoScaling::AutoScalingGroup",
-            "Properties" : {
-                "AvailabilityZones" : { "Fn::GetAZs" : "" },
-                "LaunchConfigurationName" : { "Ref" : "ServerLaunchConfiguration" },
-                "MinSize" : "0",
-                "MaxSize" : { "Ref" : "ServerInstanceNumber" },
-                "DesiredCapacity" : { "Ref" : "ServerInstanceNumber" }
-            }
-        },
-
-        "ServerWaitHandle" : {
-            "Type" : "AWS::CloudFormation::WaitConditionHandle"
-        },
-
-        "ServerWaitCondition" : {
-            "Type" : "AWS::CloudFormation::WaitCondition",
-            "DependsOn" : "ServerAutoScalingGroup",
-            "Properties" : {
-                "Count" : { "Ref" : "ServerInstanceNumber" },
-                "Handle" : { "Ref" : "ServerWaitHandle"},
-                "Timeout" : "1200"
-            }
-        },
-        "ClientLaunchConfiguration" : {
-            "Type" : "AWS::AutoScaling::LaunchConfiguration",
-            "Properties" : {
-                "KeyName" : { "Ref" : "KeyName" },
-				"ImageId" : { "Fn::FindInMap" : [ "Region2Ami", { "Ref" : "AWS::Region" }, "AMI" ] },
-                "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
-                "InstanceType" : { "Ref" : "ClientInstanceType"},
-                "InstanceMonitoring" : "false",
-                "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
-                "UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
-                    "#!/bin/bash", "\n",
-                    "yum update -y", "\n",
-                    "cd /opt", "\n",
-                    "wget ",
-                    " ", { "Ref" : "ResourceLink" },
-                    " 2>&1", "\n",
-                    "filename=$(basename ", { "Ref" : "ResourceLink" }, ")\n",
-                    "unzip $filename", "\n",
-                    "cd ${filename%.*}", "\n",
-                    "cd client", "\n",
-                    "bash ./client_setup.sh",
-                    " ", { "Fn::GetAtt" : [ "ManagerInstance", "PublicIp" ] },
-                    " ", { "Ref" : "AWS::Region" },
-                    " ", { "Ref" : "AWS::StackName" },
-                    " > /tmp/setup.log 2>&1", "\n",
-                    "/opt/aws/bin/cfn-signal -e 0 -r \"client setup complete\" '", { "Ref" : "ClientWaitHandle" }, "'\n"
-                    ] ] }
-                }
-            }
-        },
-
-        "ClientAutoScalingGroup" : {
-            "Type" : "AWS::AutoScaling::AutoScalingGroup",
-            "Properties" : {
-                "AvailabilityZones" : { "Fn::GetAZs" : "" },
-                "LaunchConfigurationName" : { "Ref" : "ClientLaunchConfiguration" },
-                "MinSize" : "0",
-                "MaxSize" : { "Ref" : "ClientInstanceNumber" },
-                "DesiredCapacity" : { "Ref" : "ClientInstanceNumber" }
-            }
-        },
-
-        "ClientWaitHandle" : {
-            "Type" : "AWS::CloudFormation::WaitConditionHandle"
-        },
-
-        "ClientWaitCondition" : {
-            "Type" : "AWS::CloudFormation::WaitCondition",
-            "DependsOn" : "ClientAutoScalingGroup",
-            "Properties" : {
-                "Count" : { "Ref" : "ClientInstanceNumber" },
-                "Handle" : { "Ref" : "ClientWaitHandle"},
-                "Timeout" : "1200"
             }
         },
 

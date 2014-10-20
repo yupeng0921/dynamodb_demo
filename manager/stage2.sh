@@ -1,8 +1,7 @@
 #! /bin/bash
 
-echo $* > /tmp/parameters.txt
-
-ori_parameters=$*
+echo "stage2 parameters"
+echo $*
 
 table_name=$1
 region=$2
@@ -20,32 +19,9 @@ write_capacity_units=$9
 shift 1
 stack_name=$9
 
-yum install -y perl-libwww-perl # for GET command
+python re_generate_template.py $stack_name $region
 
-instance_id=`GET 169.254.169.254/latest/meta-data/instance-id`
-instance_name="$stack_name""_manager"
-/usr/bin/aws ec2 create-tags --resources $instance_id --tags Key=Name,Value=$instance_name --region $region
-
-yum install -y nginx
-yum install -y python-pip
-yum install -y gcc
-yum install -y python-devel
-pip install flask
-pip install uwsgi
-
-sed -i "s/enabled=0/enabled=1/g" /etc/yum.repos.d/epel.repo
-
-yum install -y salt-master
-
-mkdir -p /srv/salt/url
-
-service salt-master start
-chkconfig salt-master on
-
-bash ./stage2.sh $ori_parameters > /tmp/stage2.log 2>&1 &
-exit 0
-
-timeout_count=600
+timeout_count=1200
 i=0
 ((total_instance_number=server_instance_number+client_instance_number))
 while true; do
@@ -114,4 +90,6 @@ bash run.sh
 
 salt '*' cmd.run 'reboot'
 
-bash back_ground.sh &
+bash back_ground.sh
+
+exit 0

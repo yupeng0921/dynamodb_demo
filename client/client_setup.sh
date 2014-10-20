@@ -8,8 +8,10 @@ stack_name=$3
 
 yum install -y perl-libwww-perl # for GET command
 instance_id=`GET 169.254.169.254/latest/meta-data/instance-id`
+echo "instance_id: $instance_id"
 instance_name="$stack_name""_client"
-/usr/bin/aws ec2 create-tags --resources $instance_id --tags Key=Name,Value=$instance_name --region $region
+echo "instance_name: $instance_name"
+/usr/bin/aws ec2 create-tags --resources $instance_id --tags Key=Name,Value=$instance_name --region $region --debug
 
 yum install -y nginx
 yum install -y python-pip
