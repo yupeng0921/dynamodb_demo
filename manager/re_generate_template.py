@@ -71,16 +71,16 @@ b = s3_conn.get_bucket(bucket_name)
 k = Key(b)
 k.key = update_template_name
 k.set_contents_from_string(body_updated)
-k.set_acl('public-read')
+try:
+    k.set_acl('public-read')
+    update_url = 'https://s3-%s.amazonaws.com/%s/%s' % (region, bucket_name, update_template_name)
 
-update_url = 'https://s3-%s.amazonaws.com/%s/%s' % (region, bucket_name, update_template_name)
+    pn = []
+    for p in parameters:
+        pn.append((p.key,p.value))
 
-pn = []
-for p in parameters:
-    pn.append((p.key,p.value))
+    conn.update_stack(stack_name, template_url=update_url, parameters=pn)
 
-conn.update_stack(stack_name, template_url=update_url, parameters=pn)
-
-waiting_stack('UPDATE_COMPLETE')
-
-k.delete()
+    waiting_stack('UPDATE_COMPLETE')
+finally:
+    k.delete()
