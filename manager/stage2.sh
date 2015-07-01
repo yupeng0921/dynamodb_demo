@@ -88,7 +88,7 @@ cp -f manager_nginx.conf /etc/nginx/nginx.conf
 service nginx start
 chkconfig nginx on
 
-cmd="cd /opt/dynamodb_demo/manager; uwsgi --socket 127.0.0.1:3031 --wsgi-file manager.py --callable app --processes 1 --threads 1 --stats 127.0.0.1:9191 -d /opt/dynamodb_demo/uwsgi.log"
+cmd="cd /opt/dynamodb_demo/manager; /usr/local/bin/uwsgi --socket 127.0.0.1:3031 --wsgi-file manager.py --callable app --processes 1 --threads 1 --stats 127.0.0.1:9191 -d /opt/dynamodb_demo/uwsgi.log"
 
 echo "$cmd" > run.sh
 echo "bash /opt/dynamodb_demo/manager/run.sh" >> /etc/rc.local

@@ -30,7 +30,7 @@ chkconfig nginx on
 
 ec2_uid=`awk 'BEGIN {FS=":"} {if($1=="ec2-user")print $3}' /etc/passwd`
 
-cmd="ulimit -n 65536; cd /opt/dynamodb_demo/server; uwsgi --socket 127.0.0.1:3031 --wsgi-file server.py --callable app --processes 8 --threads 512 --stats 127.0.0.1:9191 --uid $ec2_uid -d /opt/dynamodb_demo/uwsgi.log -L --cpu-affinity 1"
+cmd="ulimit -n 65536; cd /opt/dynamodb_demo/server; /usr/local/bin/uwsgi --socket 127.0.0.1:3031 --wsgi-file server.py --callable app --processes 8 --threads 512 --stats 127.0.0.1:9191 --uid $ec2_uid -d /opt/dynamodb_demo/uwsgi.log -L --cpu-affinity 1"
 
 echo "$cmd" >> /etc/rc.local
 

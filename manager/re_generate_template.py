@@ -79,7 +79,7 @@ try:
     for p in parameters:
         pn.append((p.key,p.value))
 
-    conn.update_stack(stack_name, template_url=update_url, parameters=pn)
+    conn.update_stack(stack_name, template_url=update_url, parameters=pn, capabilities=['CAPABILITY_IAM'])
 
     waiting_stack('UPDATE_COMPLETE')
 finally:
